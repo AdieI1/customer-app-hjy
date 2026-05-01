@@ -1,9 +1,7 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from "react-native";
-import React from "react";
-import { LinearGradient } from "expo-linear-gradient";
-import { Dimensions } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { SafeAreaView   } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
+import { Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const { width, height } = Dimensions.get("window");
 const pfpplaceholder = require("../../assets/images/profilepic.png");
@@ -72,6 +70,11 @@ const Home = () => {
 export default Home;
 
 const styles = StyleSheet.create({
+
+   safeArea: {
+    flex: 1,
+    backgroundColor: "#EDEDED",
+  },
 
   container: {
     paddingTop: height * 0.05,

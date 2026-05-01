@@ -1,44 +1,43 @@
-import { StyleSheet, Text, TouchableOpacity, View, Dimensions, Image, TextInput, ScrollView } from 'react-native'
-import React, { useState } from 'react'
-import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Picker } from '@react-native-picker/picker';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { Ionicons } from "@expo/vector-icons";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { useRouter } from "expo-router";
+import { useState } from "react";
+import { Dimensions, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const { width, height } = Dimensions.get("window");
 
-const Defaultprofile = require('../assets/images/defaultavatar.png')
-const PersonInfoIcon = require('../assets/images/personediticon.png')
+const Defaultprofile = require("../assets/images/defaultavatar.png");
+const PersonInfoIcon = require("../assets/images/personediticon.png");
 
 const accountsetup = () => {
-
   const router = useRouter();
 
-  const [Phone, setPhone] = useState('');
-  const [Fname, setFname] = useState('');
-  const [Lname, setLname] = useState('');
-  const [Gender, setGender] = useState('');
+  const [Phone, setPhone] = useState("");
+  const [Fname, setFname] = useState("");
+  const [Lname, setLname] = useState("");
+
+  const [Gender, setGender] = useState("");
+  const [showGender, setShowGender] = useState(false);
+
   const [DOB, setDOB] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const handlePhoneChange = (text) => {
-    const cleaned = text.replace(/[^0-9]/g, '');
-    if (cleaned.length <= 11) {
-      setPhone(cleaned);
-    }
+    const cleaned = text.replace(/[^0-9]/g, "");
+    if (cleaned.length <= 11) setPhone(cleaned);
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
 
-        {/* Header */}
+        {/* profile header */}
         <View style={styles.card}>
           <Text style={styles.Header}>Profile Setup</Text>
         </View>
 
-        {/* Avatar */}
+        {/* default profile place holder */}
         <View style={styles.avatarCard}>
           <View style={styles.profileWrapper}>
             <Image source={Defaultprofile} style={styles.profileImage} />
@@ -57,7 +56,7 @@ const accountsetup = () => {
           </View>
         </View>
 
-        {/* Personal Info */}
+        {/* personal information card */}
         <View style={styles.InfoHeader}>
 
           <View style={styles.TextHeading}>
@@ -67,60 +66,83 @@ const accountsetup = () => {
 
           <View style={styles.divider} />
 
-          {/* Phone */}
           <Text style={styles.infoLabel}>Phone Number</Text>
           <TextInput
             style={styles.input}
             placeholder="Phone Number"
             value={Phone}
-            onChangeText={handlePhoneChange}
+            onValueChange={handlePhoneChange}
             keyboardType="phone-pad"
             maxLength={11}
           />
 
-          {/* First Name */}
           <Text style={styles.infoLabel}>First Name</Text>
           <TextInput
             style={styles.input}
             placeholder="First Name"
             value={Fname}
-            onChangeText={setFname}
+            onValueChange={setFname}
           />
 
-          {/* Last Name */}
           <Text style={styles.infoLabel}>Last Name</Text>
           <TextInput
             style={styles.input}
             placeholder="Last Name"
             value={Lname}
-            onChangeText={setLname}
+            onValueChange={setLname}
           />
 
-          {/* Gender */}
+          {/* forda gender dropdown option */}
           <Text style={styles.infoLabel}>Gender</Text>
-          <View style={styles.pickerWrapper}>
-            <Picker
-              selectedValue={Gender}
-              onValueChange={(itemValue) => setGender(itemValue)}
-              mode="dropdown"
-              style={styles.picker}
-            >
-              <Picker.Item label="Male" value="male" />
-              <Picker.Item label="Female" value="female" />
-            </Picker>
-          </View>
 
-          {/* DOB */}
+          <TouchableOpacity
+            style={styles.inputDropdown}
+            onPress={() => setShowGender(!showGender)}
+          >
+            <Text style={{ color: Gender ? "#000" : "#888", flex: 1 }}>
+              {Gender || "Select Gender"}
+            </Text>
+
+            <Ionicons
+              name={showGender ? "chevron-up" : "chevron-down"}
+              size={18}
+              color="#3A3A3B"
+            />
+          </TouchableOpacity>
+
+          {showGender && (
+            <View style={styles.dropdown}>
+              <TouchableOpacity
+                onPress={() => {
+                  setGender("Male");
+                  setShowGender(false);
+                }}
+              >
+                <Text style={styles.dropdownItem}>Male</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => {
+                  setGender("Female");
+                  setShowGender(false);
+                }}
+              >
+                <Text style={styles.dropdownItem}>Female</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {/* forda date of birth */}
           <Text style={styles.infoLabel}>Date of Birth</Text>
 
           <TouchableOpacity
             style={styles.calendar}
             onPress={() => setShowDatePicker(true)}
           >
-            <Ionicons name="calendar-outline" size={width * 0.05} color="#3A3A3B" />
+            <Ionicons name="calendar-outline" size={20} color="#3A3A3B" />
             <Text style={styles.calendarText}>
               {DOB
-                ? `${(DOB.getMonth() + 1).toString().padStart(2, '0')}/${DOB.getDate().toString().padStart(2, '0')}/${DOB.getFullYear()}`
+                ? `${(DOB.getMonth() + 1).toString().padStart(2, "0")}/${DOB.getDate().toString().padStart(2, "0")}/${DOB.getFullYear()}`
                 : "Open Calendar"}
             </Text>
           </TouchableOpacity>
@@ -138,19 +160,22 @@ const accountsetup = () => {
             />
           )}
 
-          <TouchableOpacity style={styles.ContinueBtn} onPress={() => router.push("/(tabs)/home")}>
+          {/* continue button */}
+          <TouchableOpacity
+            style={styles.ContinueBtn}
+            onPress={() => router.push("/(tabs)/home")}
+          >
             <Text style={styles.Btntext}>Continue</Text>
-           
           </TouchableOpacity>
 
         </View>
-
       </ScrollView>
     </SafeAreaView>
-  )
-}
+  );
+};
 
-export default accountsetup
+export default accountsetup;
+
 
 const styles = StyleSheet.create({
   container: {
@@ -269,18 +294,29 @@ const styles = StyleSheet.create({
     padding: width * 0.035,
     fontSize: width * 0.035,
     color: "#3A3A3B",
-  },
-
-  pickerWrapper: {
-    backgroundColor: "#D2D6E0",
-    borderRadius: width * 0.02,
-    overflow: "hidden",
     marginTop: 5,
   },
 
-  picker: {
-    height: height * 0.06,
-    width: "100%",
+  inputDropdown: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#D2D6E0",
+    borderRadius: width * 0.02,
+    padding: width * 0.035,
+    marginTop: 5,
+  },
+
+  dropdown: {
+    backgroundColor: "#D2D6E0",
+    borderRadius: width * 0.02,
+    marginTop: 5,
+    padding: 10,
+  },
+
+  dropdownItem: {
+    padding: 10,
+    fontSize: width * 0.035,
+    color: "#333",
   },
 
   calendar: {
@@ -306,7 +342,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
 
-  Btntext: { 
+  Btntext: {
     textAlign: "center",
     color: "#fff",
     fontSize: width * 0.04,

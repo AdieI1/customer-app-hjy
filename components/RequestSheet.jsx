@@ -1,64 +1,61 @@
-import { ScrollView, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View, } from "react-native";
+import { Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View, } from "react-native";
 import CargoSection from "./sections/CargoSection";
+import DeliverySection from "./sections/DeliverySection";
+import OverviewSection from "./sections/OverviewSection";
+import PaymentSection from "./sections/PaymentSection";
+
+const { width, height } = Dimensions.get("window");
 
 export default function RequestSheet({ onClose }) {
-  const { width } = useWindowDimensions();
   const isSmallScreen = width < 360;
 
   return (
     <View style={styles.container}>
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* HEADER */}
-        <View style={styles.header}>
-          <Text style={[styles.title, isSmallScreen && { fontSize: 18 }]}>
+      <View style={styles.headerContainer}>
+        <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
+          <Text style={styles.closeText}>✕</Text>
+        </TouchableOpacity>
+
+        <View style={styles.headerCenter}>
+          <Text style={[styles.title, isSmallScreen && { fontSize: 20 }]}>
             Request Delivery
           </Text>
 
-          <TouchableOpacity onPress={onClose}>
-            <Text style={styles.closeText}>✕</Text>
-          </TouchableOpacity>
+          <Text style={styles.subtitle}>
+            Enter the required details to request a delivery.
+          </Text>
         </View>
 
-        {/* SECTION: Cargo Info */}
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Cargo Information</Text>
-        </View>
+        <View style={styles.divider} />
+      </View>
 
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* CARGO */}
         <CargoSection />
 
-        {/* SECTION: Delivery Location */}
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Delivery Location</Text>
+        {/* DELIVERY LOCATION */}
+        <DeliverySection />
+
+        {/* DELIVERY OVERVIEW */}
+        <OverviewSection />
+
+        {/* PAYMENT */}
+        <PaymentSection />
+
+        {/* BUTTONS */}
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.primaryBtn}>
+            <Text style={styles.primaryText}>Complete</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.secondaryBtn}>
+            <Text style={styles.secondaryText}>Save as Draft</Text>
+          </TouchableOpacity>
         </View>
-
-        {/* placeholder for now */}
-        <View style={styles.placeholderBox} />
-
-        {/* SECTION: Delivery Overview */}
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Delivery Overview</Text>
-        </View>
-
-        <View style={styles.placeholderBox} />
-
-        {/* SECTION: Payment Terms */}
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Payment Terms</Text>
-        </View>
-
-        <View style={styles.placeholderBox} />
-
-        {/* ACTION BUTTONS */}
-        <TouchableOpacity style={styles.primaryBtn}>
-          <Text style={styles.primaryText}>Complete</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.secondaryBtn}>
-          <Text style={styles.secondaryText}>Save as Draft</Text>
-        </TouchableOpacity>
       </ScrollView>
     </View>
   );
@@ -68,72 +65,102 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F4F5F7",
+    borderTopLeftRadius: width * 0.06,
+    borderTopRightRadius: width * 0.06,
+    overflow: "hidden",
   },
 
-  scrollContent: {
-    padding: 16,
-    paddingBottom: 40,
-  },
-
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+  headerContainer: {
+    paddingTop: height * 0.02,
+    paddingBottom: height * 0.0006,
     alignItems: "center",
-    marginBottom: 16,
   },
 
-  title: {
-    fontSize: 22,
-    fontWeight: "700",
-    color: "#E53935",
+  headerCenter: {
+    alignItems: "center",
+    width: "100%",
+    paddingHorizontal: width * 0.05,
+  },
+
+  closeBtn: {
+    position: "absolute",
+    right: 10,
+    top: 10,
+    padding: 6,
   },
 
   closeText: {
-    fontSize: 18,
+    fontSize: width * 0.05,
     color: "#999",
   },
 
+  title: {
+    fontSize: width * 0.065,
+    fontWeight: "700",
+    color: "#E53935",
+    textAlign: "center",
+  },
+
+  subtitle: {
+    fontSize: width * 0.03,
+    color: "#555",
+    marginTop: 4,
+    textAlign: "center",
+    marginBottom: 10,
+  },
+
+  divider: {
+    height: 1,
+    width: "100%",
+    backgroundColor: "#d8d1d1",
+    marginTop: height * 0.01,
+  },
+
+  scrollContent: {
+    paddingHorizontal: width * 0.04,
+    paddingTop: height * 0.01,
+    paddingBottom: height * 0.08,
+  },
+
   sectionHeader: {
-    marginBottom: 6,
-    marginTop: 6,
+    marginTop: height * 0.002,
+    marginBottom: height * 0.008,
   },
 
   sectionTitle: {
-    fontSize: 14,
+    fontSize: width * 0.04,
     fontWeight: "700",
     color: "#E53935",
   },
 
-  placeholderBox: {
-    backgroundColor: "#fff",
-    height: 80,
-    borderRadius: 12,
-    marginBottom: 12,
+  buttonContainer: {
+    marginTop: height * 0.02,
+    gap: 12,
   },
 
   primaryBtn: {
     backgroundColor: "#E53935",
-    padding: 14,
-    borderRadius: 10,
+    paddingVertical: height * 0.018,
+    borderRadius: width * 0.03,
     alignItems: "center",
-    marginTop: 10,
   },
 
   primaryText: {
     color: "#fff",
     fontWeight: "700",
+    fontSize: width * 0.04,
   },
 
   secondaryBtn: {
     backgroundColor: "#9E9E9E",
-    padding: 14,
-    borderRadius: 10,
+    paddingVertical: height * 0.018,
+    borderRadius: width * 0.03,
     alignItems: "center",
-    marginTop: 10,
   },
 
   secondaryText: {
     color: "#fff",
     fontWeight: "600",
+    fontSize: width * 0.04,
   },
 });

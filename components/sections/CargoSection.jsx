@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { FlatList, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View, } from "react-native";
+import { Dimensions, FlatList, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View, } from "react-native";
+
+const { width, height } = Dimensions.get("window");
 
 export default function CargoSection() {
   const [cargoType, setCargoType] = useState(null);
@@ -9,14 +11,9 @@ export default function CargoSection() {
   const [modalVisible, setModalVisible] = useState(false);
   const [activeField, setActiveField] = useState(null);
 
-  const cargoOptions = [
-    "Electronics",
-    "General Goods",
-    "Construction",
-    "Furniture",
-    "Perishable Goods",
-  ];
-
+  //Carg type list
+  const cargoOptions = ["Electronics","General Goods","Construction","Furniture","Perishable Goods",];
+ //Fragility list
   const fragilityOptions = ["Fragile", "Standard", "Perishable"];
 
   const openModal = (field) => {
@@ -47,9 +44,10 @@ export default function CargoSection() {
 
   return (
     <View style={styles.card}>
-      <Text style={styles.title}>Cargo Information</Text>
 
-      {/* forda cargo type */}
+      <Text style={styles.title}>Cargo Information</Text> 
+      <View style={styles.divider} />
+
       <TouchableOpacity
         style={styles.input}
         onPress={() => openModal("cargo")}
@@ -59,7 +57,6 @@ export default function CargoSection() {
         </Text>
       </TouchableOpacity>
 
-      {/* forda cargo fragility */}
       <TouchableOpacity
         style={styles.input}
         onPress={() => openModal("fragility")}
@@ -69,31 +66,27 @@ export default function CargoSection() {
         </Text>
       </TouchableOpacity>
 
-      {/* forda weight */}
       <View style={styles.weightContainer}>
-            <TextInput
-                style={styles.weightInput}
-                placeholder="Enter Cargo Weight"
-                keyboardType="numeric"
-                value={weight}
-                onChangeText={(text) => {
-                    const cleaned = text.replace(/[^0-9]/g, "");
-                    setWeight(cleaned);
-                }}
-            />
+        <TextInput
+          style={styles.weightInput}
+          placeholder="Enter Cargo Weight"
+          keyboardType="numeric"
+          value={weight}
+          onChangeText={(text) => {
+            const cleaned = text.replace(/[^0-9]/g, "");
+            setWeight(cleaned);
+          }}
+        />
         <Text style={[styles.kg, weight ? styles.kgActive : null]}>
           kg
         </Text>
       </View>
 
-      {/* container animation */}
       <Modal visible={modalVisible} transparent animationType="slide">
         <View style={styles.modalOverlay}>
           <View style={styles.modalBox}>
-            {/* container title */}
             <Text style={styles.modalTitle}>{getModalTitle()}</Text>
 
-            {/* OPTIONS */}
             <FlatList
               data={getOptions()}
               keyExtractor={(item) => item}
@@ -107,13 +100,13 @@ export default function CargoSection() {
               )}
             />
 
-            {/* cancel buton */}
             <TouchableOpacity onPress={closeModal}>
               <Text style={styles.cancel}>Cancel</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
+
     </View>
   );
 }
@@ -121,50 +114,63 @@ export default function CargoSection() {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: "#fff",
-    padding: 14,
-    borderRadius: 14,
-    marginBottom: 12,
+    padding: width * 0.04,
+    borderRadius: width * 0.04,
+    marginBottom: height * 0.015,
   },
 
-  title: {
-    color: "#E53935",
+   title: {
+    fontSize: width * 0.04,
     fontWeight: "700",
-    marginBottom: 10,
+    color: "#E53935",
+    marginBottom: height * 0.01,
+  },
+
+   divider: {
+    height: 1,
+    backgroundColor: "#eee",
+    marginBottom: height * 0.01,
   },
 
   input: {
     backgroundColor: "#F1F2F4",
-    padding: 12,
-    borderRadius: 10,
-    marginBottom: 10,
+    paddingVertical: height * 0.015,
+    paddingHorizontal: width * 0.03,
+    borderRadius: width * 0.03,
+    marginBottom: height * 0.012,
   },
 
   placeholder: {
     color: "#888",
+    fontSize: width * 0.035,
   },
 
   value: {
     color: "#111",
     fontWeight: "500",
+    fontSize: width * 0.035,
   },
 
   weightContainer: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#F1F2F4",
-    borderRadius: 10,
-    paddingHorizontal: 12,
+    borderRadius: width * 0.03,
+    paddingHorizontal: width * 0.03,
   },
 
   weightInput: {
     flex: 1,
-    paddingVertical: 12,
+    paddingVertical: height * 0.015,
+    fontSize: width * 0.035,
+    color: "#888",
   },
 
   kg: {
     color: "#999",
     fontWeight: "600",
-    marginLeft: 4,
+    marginLeft: width * 0.01,
+    fontSize: width * 0.035,
   },
 
   kgActive: {
@@ -179,34 +185,35 @@ const styles = StyleSheet.create({
 
   modalBox: {
     backgroundColor: "#fff",
-    padding: 20,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    maxHeight: "60%",
+    padding: width * 0.05,
+    borderTopLeftRadius: width * 0.05,
+    borderTopRightRadius: width * 0.05,
+    maxHeight: height * 0.6,
   },
 
   modalTitle: {
-    fontSize: 16,
+    fontSize: width * 0.04,
     fontWeight: "700",
-    marginBottom: 10,
+    marginBottom: height * 0.01,
     color: "#111",
   },
 
   option: {
-    paddingVertical: 14,
+    paddingVertical: height * 0.018,
     borderBottomWidth: 1,
     borderColor: "#eee",
   },
 
   optionText: {
-    fontSize: 14,
+    fontSize: width * 0.035,
     color: "#111",
   },
 
   cancel: {
     textAlign: "center",
-    marginTop: 10,
+    marginTop: height * 0.015,
     color: "#E53935",
     fontWeight: "600",
+    fontSize: width * 0.04,
   },
 });

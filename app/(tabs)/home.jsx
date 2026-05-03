@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { useEffect, useRef, useState } from "react"; // FIX: hooks
-import { Animated, Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native"; // FIX: Animated included
+import { useEffect, useRef, useState } from "react";
+import { Animated, Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import RequestSheet from "../../components/RequestSheet";
@@ -10,16 +10,12 @@ const { width, height } = Dimensions.get("window");
 const pfpplaceholder = require("../../assets/images/profilepic.png");
 
 const Home = () => {
-
   const [showSheet, setShowSheet] = useState(false);
-  const [mounted, setMounted] = useState(false);
 
   const translateY = useRef(new Animated.Value(height)).current;
 
   useEffect(() => {
     if (showSheet) {
-      setMounted(true);
-
       Animated.timing(translateY, {
         toValue: 0,
         duration: 300,
@@ -30,9 +26,7 @@ const Home = () => {
         toValue: height,
         duration: 250,
         useNativeDriver: true,
-      }).start(() => {
-        setMounted(false);
-      });
+      }).start();
     }
   }, [showSheet]);
 
@@ -40,9 +34,9 @@ const Home = () => {
   const closeSheet = () => setShowSheet(false);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}> {/* FIX: REQUIRED for overlays to work */}
+    <SafeAreaView style={{ flex: 1 }}>
 
-      <View style={{ flex: 1 }}> {/* FIX: root stacking context */}
+      <View style={{ flex: 1 }}>
 
         <LinearGradient colors={["#4F0A11", "#9E1E21"]} style={styles.container}>
           
@@ -63,10 +57,11 @@ const Home = () => {
 
         <ScrollView style={styles.body} showsVerticalScrollIndicator={false}>
           
-          {/* forda REQUEST DELIVERY!  */}
           <View style={styles.requestCard}>
             <Text style={styles.requestHeader}>Request Delivery!</Text>
-            <Text style={styles.requestSubheader}>Schedule a delivery quick and easy.</Text>
+            <Text style={styles.requestSubheader}>
+              Schedule a delivery quick and easy.
+            </Text>
 
             <View style={styles.divider} />
 
@@ -76,7 +71,6 @@ const Home = () => {
             </TouchableOpacity>
           </View>
 
-          {/* forda ACTIVE REQUESTS  */}
           <View style={styles.activeCard}>
             <Text style={styles.activeHeader}>Active Deliveries</Text>
 
@@ -88,7 +82,9 @@ const Home = () => {
               </View>
 
               <View style={styles.activetxtContainer}>
-                <Text style={styles.noactiveHeader}>No active deliveries yet!</Text>
+                <Text style={styles.noactiveHeader}>
+                  No active deliveries yet!
+                </Text>
                 <Text style={styles.noactiveSubheader}>
                   Tap "Create Request" to schedule your first delivery!
                 </Text>
@@ -100,7 +96,7 @@ const Home = () => {
 
         </ScrollView>
 
-        {/* BACKDROP FIRST (important layering fix) */}
+        {/* BACKDROP */}
         {showSheet && (
           <TouchableOpacity
             activeOpacity={1}
@@ -109,8 +105,8 @@ const Home = () => {
           />
         )}
 
-        {/* SHEET LAST (must be above everything) */}
-        {mounted && (
+        {/* SHEET */}
+        {showSheet && (
           <Animated.View
             style={[
               styles.sheetContainer,
@@ -268,8 +264,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    zIndex: 999, // FIX: ensure above everything
-    elevation: 20, // FIX: Android layering fix
+    zIndex: 999,
+    elevation: 20, 
   },
 
   backdrop: {

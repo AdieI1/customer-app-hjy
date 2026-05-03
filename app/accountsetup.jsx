@@ -10,7 +10,7 @@ const { width, height } = Dimensions.get("window");
 const Defaultprofile = require("../assets/images/defaultavatar.png");
 const PersonInfoIcon = require("../assets/images/personediticon.png");
 
-const accountsetup = () => {
+const AccountSetup = () => {
   const router = useRouter();
 
   const [Phone, setPhone] = useState("");
@@ -28,16 +28,26 @@ const accountsetup = () => {
     if (cleaned.length <= 11) setPhone(cleaned);
   };
 
+  const formatDate = (date) => {
+    if (!(date instanceof Date)) return "Open Calendar";
+
+    const mm = (date.getMonth() + 1).toString().padStart(2, "0");
+    const dd = date.getDate().toString().padStart(2, "0");
+    const yyyy = date.getFullYear();
+
+    return `${mm}/${dd}/${yyyy}`;
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
 
-        {/* profile header */}
+        {/* HEADER */}
         <View style={styles.card}>
           <Text style={styles.Header}>Profile Setup</Text>
         </View>
 
-        {/* default profile place holder */}
+        {/* PROFILE */}
         <View style={styles.avatarCard}>
           <View style={styles.profileWrapper}>
             <Image source={Defaultprofile} style={styles.profileImage} />
@@ -56,7 +66,7 @@ const accountsetup = () => {
           </View>
         </View>
 
-        {/* personal information card */}
+        {/* PERSONAL INFO */}
         <View style={styles.InfoHeader}>
 
           <View style={styles.TextHeading}>
@@ -66,33 +76,36 @@ const accountsetup = () => {
 
           <View style={styles.divider} />
 
+          {/* PHONE */}
           <Text style={styles.infoLabel}>Phone Number</Text>
           <TextInput
             style={styles.input}
             placeholder="Phone Number"
             value={Phone}
-            onValueChange={handlePhoneChange}
+            onChangeText={handlePhoneChange}
             keyboardType="phone-pad"
             maxLength={11}
           />
 
+          {/* FIRST NAME */}
           <Text style={styles.infoLabel}>First Name</Text>
           <TextInput
             style={styles.input}
             placeholder="First Name"
             value={Fname}
-            onValueChange={setFname}
+            onChangeText={setFname}
           />
 
+          {/* LAST NAME */}
           <Text style={styles.infoLabel}>Last Name</Text>
           <TextInput
             style={styles.input}
             placeholder="Last Name"
             value={Lname}
-            onValueChange={setLname}
+            onChangeText={setLname}
           />
 
-          {/* forda gender dropdown option */}
+          {/* GENDER */}
           <Text style={styles.infoLabel}>Gender</Text>
 
           <TouchableOpacity
@@ -112,27 +125,17 @@ const accountsetup = () => {
 
           {showGender && (
             <View style={styles.dropdown}>
-              <TouchableOpacity
-                onPress={() => {
-                  setGender("Male");
-                  setShowGender(false);
-                }}
-              >
+              <TouchableOpacity onPress={() => { setGender("Male"); setShowGender(false); }}>
                 <Text style={styles.dropdownItem}>Male</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity
-                onPress={() => {
-                  setGender("Female");
-                  setShowGender(false);
-                }}
-              >
+              <TouchableOpacity onPress={() => { setGender("Female"); setShowGender(false); }}>
                 <Text style={styles.dropdownItem}>Female</Text>
               </TouchableOpacity>
             </View>
           )}
 
-          {/* forda date of birth */}
+          {/* DATE OF BIRTH */}
           <Text style={styles.infoLabel}>Date of Birth</Text>
 
           <TouchableOpacity
@@ -141,26 +144,27 @@ const accountsetup = () => {
           >
             <Ionicons name="calendar-outline" size={20} color="#3A3A3B" />
             <Text style={styles.calendarText}>
-              {DOB
-                ? `${(DOB.getMonth() + 1).toString().padStart(2, "0")}/${DOB.getDate().toString().padStart(2, "0")}/${DOB.getFullYear()}`
-                : "Open Calendar"}
+              {formatDate(DOB)}
             </Text>
           </TouchableOpacity>
 
           {showDatePicker && (
             <DateTimePicker
-              value={DOB || new Date()}
+              value={DOB instanceof Date ? DOB : new Date()}
               mode="date"
-              display="calendar"
+              display="default"
               maximumDate={new Date()}
-              onValueChange={(event, selectedDate) => {
+              onChange={(event, selectedDate) => {
                 setShowDatePicker(false);
-                if (selectedDate) setDOB(selectedDate);
+
+                if (event.type === "set" && selectedDate instanceof Date) {
+                  setDOB(selectedDate);
+                }
               }}
             />
           )}
 
-          {/* continue button */}
+          {/* CONTINUE */}
           <TouchableOpacity
             style={styles.ContinueBtn}
             onPress={() => router.push("/(tabs)/home")}
@@ -174,8 +178,9 @@ const accountsetup = () => {
   );
 };
 
-export default accountsetup;
+export default AccountSetup;
 
+/* ---------------- STYLES ---------------- */
 
 const styles = StyleSheet.create({
   container: {

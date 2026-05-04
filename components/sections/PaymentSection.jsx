@@ -109,8 +109,8 @@ const styles = StyleSheet.create({
   },
 
   active: {
-    borderColor: "#5A6CF3",
-    backgroundColor: "#5A6CF3",
+    borderColor: "#3286E8",
+    backgroundColor: "#3286E8",
   },
 
   text: {

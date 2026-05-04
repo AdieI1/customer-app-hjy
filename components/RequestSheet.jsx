@@ -1,4 +1,7 @@
-import { Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View, } from "react-native";
+import { useState } from "react"; // added
+import { Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
+import MapModal from "./MapModal"; // FIXED PATH
 import CargoSection from "./sections/CargoSection";
 import DeliverySection from "./sections/DeliverySection";
 import OverviewSection from "./sections/OverviewSection";
@@ -9,8 +12,25 @@ const { width, height } = Dimensions.get("window");
 export default function RequestSheet({ onClose }) {
   const isSmallScreen = width < 360;
 
+  const [mapVisible, setMapVisible] = useState(false); // added
+  const [activeField, setActiveField] = useState(null); // added
+
+  const [pickup, setPickup] = useState(null); // added
+  const [dropoff, setDropoff] = useState(null); // added
+
+  const openMap = (type) => { // added
+    setActiveField(type);
+    setMapVisible(true);
+  };
+
+  const handleConfirm = (coords) => { // added
+    if (activeField === "pickup") setPickup(coords);
+    if (activeField === "dropoff") setDropoff(coords);
+  };
+
   return (
     <View style={styles.container}>
+
       <View style={styles.headerContainer}>
         <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
           <Text style={styles.closeText}>✕</Text>
@@ -34,19 +54,19 @@ export default function RequestSheet({ onClose }) {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* CARGO */}
+
         <CargoSection />
 
-        {/* DELIVERY LOCATION */}
-        <DeliverySection />
+        <DeliverySection
+          pickup={pickup} // added
+          dropoff={dropoff} // added
+          onOpenMap={openMap} // added
+        />
 
-        {/* DELIVERY OVERVIEW */}
         <OverviewSection />
 
-        {/* PAYMENT */}
         <PaymentSection />
 
-        {/* BUTTONS */}
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.primaryBtn}>
             <Text style={styles.primaryText}>Complete</Text>
@@ -56,7 +76,15 @@ export default function RequestSheet({ onClose }) {
             <Text style={styles.secondaryText}>Save as Draft</Text>
           </TouchableOpacity>
         </View>
+
       </ScrollView>
+
+      <MapModal
+        visible={mapVisible} // added
+        onClose={() => setMapVisible(false)} // added
+        onConfirm={handleConfirm} // FIXED CLEAN
+      />
+
     </View>
   );
 }
@@ -120,17 +148,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: width * 0.04,
     paddingTop: height * 0.01,
     paddingBottom: height * 0.08,
-  },
-
-  sectionHeader: {
-    marginTop: height * 0.002,
-    marginBottom: height * 0.008,
-  },
-
-  sectionTitle: {
-    fontSize: width * 0.04,
-    fontWeight: "700",
-    color: "#E53935",
   },
 
   buttonContainer: {

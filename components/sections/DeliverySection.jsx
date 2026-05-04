@@ -1,8 +1,14 @@
-import { Dimensions, StyleSheet, Text, TextInput, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const { width, height } = Dimensions.get("window");
 
-export default function DeliverySection() {
+export default function DeliverySection({ pickup, dropoff, onOpenMap }) {
+
+  const handleOpenMap = (type) => {
+    if (onOpenMap) onOpenMap(type);
+  };
+
   return (
     <View style={styles.card}>
 
@@ -10,16 +16,31 @@ export default function DeliverySection() {
       <View style={styles.divider} />
 
       <Text style={styles.label}>Select Pick-up address</Text>
-      <TextInput
+      <TouchableOpacity
         style={styles.input}
-        placeholder="Port Area, Cagayan De Oro City..."
-      />
+        onPress={() => handleOpenMap("pickup")}
+      >
+        <View style={styles.row}>
+          <Ionicons name="location-sharp" size={18} color="#E53935" />
+          <Text style={styles.text}>
+            {pickup ? "Pickup location selected" : "Tap to select pickup location"}
+          </Text>
+        </View>
+      </TouchableOpacity>
 
       <Text style={styles.label}>Set Drop-off address</Text>
-      <TextInput
+      <TouchableOpacity
         style={styles.input}
-        placeholder="4441-WXY, Malaybalay City..."
-      />
+        onPress={() => handleOpenMap("dropoff")}
+      >
+        <View style={styles.row}>
+          <Ionicons name="location-sharp" size={18} color="#E53935" />
+          <Text style={styles.text}>
+            {dropoff ? "Drop-off location selected" : "Tap to select drop-off location"}
+          </Text>
+        </View>
+      </TouchableOpacity>
+
     </View>
   );
 }
@@ -57,6 +78,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: width * 0.03,
     borderRadius: width * 0.03,
     marginBottom: height * 0.012,
+  },
+
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  text: {
     fontSize: width * 0.035,
+    color: "#777",
+    marginLeft: 8,
+    flex: 1,
   },
 });

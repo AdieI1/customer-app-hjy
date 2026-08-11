@@ -1,9 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
 import {
   Dimensions,
-  Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -12,11 +10,10 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import AppHeader from "../../components/AppHeader";
 import DeliveryCard from "../../components/DeliveryCard";
 
 const { width, height } = Dimensions.get("window");
-
-const pfpplaceholder = require("../../assets/images/profilepic.png");
 
 export default function Deliveries() {
   const [selectedTab, setSelectedTab] = useState("active");
@@ -36,9 +33,22 @@ export default function Deliveries() {
       id: "1",
       cargoName: "Electronics Cargo",
       cargo: "Electronics",
-      status: "delivered",
+      status: "intransit",
       route: "Port Area - Malaybalay",
       date: "March 30, 2026",
+      driver: "John Jones",
+      vehicle: "Fuso FJ 2828R",
+      plate: "XYZ 1213",
+      distance: "20 km",
+    },
+
+    {
+      id: "2",
+      cargoName: "Electronics Cargo",
+      cargo: "Electronics",
+      status: "delivered",
+      route: "Port Area - Malaybalay",
+      date: "March 28, 2026",
       driver: "John Jones",
       vehicle: "Fuso FJ 2828R",
       plate: "XYZ 1213",
@@ -47,7 +57,7 @@ export default function Deliveries() {
   ];
 
   const activeDeliveries = deliveries.filter(
-    (item) => item.status === "intransit"
+    (item) => item.status !== "delivered"
   );
 
   const historyDeliveries = deliveries.filter(
@@ -61,41 +71,19 @@ export default function Deliveries() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+
       {/* HEADER */}
-      <LinearGradient
-        colors={["#9E1E21", "#4F0A11"]}
-        style={styles.container}
-      >
-        <View style={styles.pfpContainer}>
-          <Image
-            source={pfpplaceholder}
-            style={styles.pfp}
-          />
-
-          <View>
-            <Text style={styles.welcome}>
-              Welcome!
-            </Text>
-
-            <Text style={styles.Name}>
-              Justine Montefalco.
-            </Text>
-          </View>
-        </View>
-
-        <TouchableOpacity style={styles.draftIcon}>
-          <Ionicons
-            name="document-text-outline"
-            size={30}
-            color="#FFFFFF"
-          />
-        </TouchableOpacity>
-      </LinearGradient>
+      <AppHeader
+        icon="document-text-outline"
+        iconSize={30}
+      />
 
       {/* BODY */}
       <View style={styles.body}>
+
         <View style={styles.card}>
           <View style={styles.cardContent}>
+
             {/* TITLE */}
             <View style={styles.headerRow}>
               <Text style={styles.Deliveries}>
@@ -142,6 +130,7 @@ export default function Deliveries() {
 
             {/* TABS */}
             <View style={styles.tabRow}>
+
               <TouchableOpacity
                 style={[
                   styles.tabButton,
@@ -179,6 +168,7 @@ export default function Deliveries() {
                   History
                 </Text>
               </TouchableOpacity>
+
             </View>
           </View>
         </View>
@@ -212,6 +202,7 @@ export default function Deliveries() {
             </View>
           )}
         </ScrollView>
+
       </View>
     </SafeAreaView>
   );
@@ -221,48 +212,6 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: "#EDEDED",
-  },
-
-  container: {
-    paddingTop: height * 0.05,
-    paddingHorizontal: width * 0.03,
-    paddingBottom: height * 0.03,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-
-  pfpContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-
-  pfp: {
-    width: width * 0.18,
-    height: width * 0.18,
-  },
-
-  welcome: {
-    color: "#FFFFFF",
-    fontSize: width * 0.06,
-    marginLeft: width * 0.03,
-    fontWeight: "500",
-  },
-
-  Name: {
-    color: "#FFFFFF",
-    fontSize: width * 0.05,
-    marginLeft: width * 0.03,
-    fontWeight: "400",
-  },
-
-  draftIcon: {
-    width: width * 0.11,
-    height: width * 0.11,
-    borderRadius: (width * 0.11) / 2,
-    backgroundColor: "rgba(255,255,255,0.2)",
-    justifyContent: "center",
-    alignItems: "center",
   },
 
   body: {
@@ -295,9 +244,12 @@ const styles = StyleSheet.create({
   sort: {
     flexDirection: "row",
     alignItems: "center",
+
     backgroundColor: "#DCE3F1",
+
     paddingVertical: height * 0.008,
     paddingHorizontal: width * 0.03,
+
     borderRadius: 12,
   },
 
@@ -343,6 +295,7 @@ const styles = StyleSheet.create({
 
   deliveryList: {
     flex: 1,
+    backgroundColor: "#EDEEF5",
   },
 
   deliveryContent: {
@@ -366,14 +319,21 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: height * 0.065,
     right: width * 0.04,
+
     backgroundColor: "#FFFFFF",
+
     borderRadius: 10,
+
     width: width * 0.6,
+
     paddingVertical: 6,
+
     shadowColor: "#000",
     shadowOpacity: 0.15,
     shadowRadius: 8,
+
     elevation: 5,
+
     zIndex: 1000,
   },
 

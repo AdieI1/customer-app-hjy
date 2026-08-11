@@ -1,19 +1,27 @@
 import { Ionicons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import { Animated, Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, } from "react-native";
+import {
+  Animated,
+  Dimensions,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import ActiveDeliveryCard from "../../components/ActiveDeliveryCard";
+import AppHeader from "../../components/AppHeader";
 import NoActiveDeliveryCard from "../../components/NoActiveDeliveryCard";
 import RequestSheet from "../../components/RequestSheet";
 
 const { width, height } = Dimensions.get("window");
-const pfpplaceholder = require("../../assets/images/profilepic.png");
 
 const Home = () => {
   const router = useRouter();
+
   const [showSheet, setShowSheet] = useState(false);
 
   const translateY = useRef(
@@ -35,43 +43,27 @@ const Home = () => {
     }).start();
   }, [showSheet]);
 
-  const openSheet = () => setShowSheet(true);
-  const closeSheet = () => setShowSheet(false);
+  const openSheet = () => {
+    setShowSheet(true);
+  };
+
+  const closeSheet = () => {
+    setShowSheet(false);
+  };
+
+  const handleViewDelivery = () => {
+    router.push("/deliveries");
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
 
         {/* HEADER */}
-        <LinearGradient
-          colors={["#4F0A11", "#9E1E21"]}
-          style={styles.header}
-        >
-          <View style={styles.pfpContainer}>
-            <Image
-              source={pfpplaceholder}
-              style={styles.pfp}
-            />
-
-            <View>
-              <Text style={styles.welcome}>
-                Welcome!
-              </Text>
-
-              <Text style={styles.name}>
-                Justine Montefalco.
-              </Text>
-            </View>
-          </View>
-
-          <TouchableOpacity style={styles.draftIcon}>
-            <Ionicons
-              name="document-text-outline"
-              size={30}
-              color="#FFFFFF"
-            />
-          </TouchableOpacity>
-        </LinearGradient>
+        <AppHeader
+          icon="document-text-outline"
+          iconSize={30}
+        />
 
         {/* BODY */}
         <ScrollView
@@ -110,14 +102,14 @@ const Home = () => {
           </View>
 
           {/* ACTIVE DELIVERY */}
-        {activeDelivery ? (
-          <ActiveDeliveryCard
-            delivery={activeDelivery}
-            onViewDetails={() => router.push("/deliveries")}
-          />
-        ) : (
-          <NoActiveDeliveryCard />
-        )}
+          {activeDelivery ? (
+            <ActiveDeliveryCard
+              delivery={activeDelivery}
+              onViewDetails={handleViewDelivery}
+            />
+          ) : (
+            <NoActiveDeliveryCard />
+          )}
 
         </ScrollView>
 
@@ -137,7 +129,9 @@ const Home = () => {
               styles.sheetContainer,
               {
                 transform: [
-                  { translateY },
+                  {
+                    translateY,
+                  },
                 ],
               },
             ]}
@@ -161,48 +155,6 @@ const styles = StyleSheet.create({
 
   container: {
     flex: 1,
-  },
-
-  header: {
-    paddingTop: height * 0.05,
-    paddingHorizontal: width * 0.03,
-    paddingBottom: height * 0.025,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-
-  pfpContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-
-  pfp: {
-    width: width * 0.18,
-    height: width * 0.18,
-  },
-
-  welcome: {
-    color: "#FFFFFF",
-    fontSize: width * 0.06,
-    marginLeft: width * 0.03,
-    fontWeight: "500",
-  },
-
-  name: {
-    color: "#FFFFFF",
-    fontSize: width * 0.05,
-    marginLeft: width * 0.03,
-    fontWeight: "400",
-  },
-
-  draftIcon: {
-    width: width * 0.11,
-    height: width * 0.11,
-    borderRadius: (width * 0.11) / 2,
-    backgroundColor: "rgba(255,255,255,0.2)",
-    justifyContent: "center",
-    alignItems: "center",
   },
 
   body: {
@@ -244,6 +196,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#E53935",
     paddingVertical: 12,
     borderRadius: 12,
+
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
@@ -261,19 +214,26 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
+
     height: height * 0.85,
+
     backgroundColor: "#FFFFFF",
+
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+
     zIndex: 999,
     elevation: 20,
   },
 
   backdrop: {
     position: "absolute",
+
     width: "100%",
     height: "100%",
+
     backgroundColor: "rgba(0,0,0,0.4)",
+
     zIndex: 998,
   },
 });

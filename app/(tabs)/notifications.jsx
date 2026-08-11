@@ -1,8 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import {
   Dimensions,
-  Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -11,10 +9,10 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import AppHeader from "../../components/AppHeader";
 import NotificationCard from "../../components/NotificationsCard";
 
 const { width, height } = Dimensions.get("window");
-const pfpplaceholder = require("../../assets/images/profilepic.png");
 
 export default function Notifications() {
   const notifications = [
@@ -25,6 +23,7 @@ export default function Notifications() {
       route: "Port Area - Malaybalay",
       time: "10 sec ago",
     },
+
     {
       id: "2",
       title: "Your Delivery is now Approved",
@@ -32,6 +31,7 @@ export default function Notifications() {
       route: "Port Area - Malaybalay",
       time: "10 min ago",
     },
+
     {
       id: "3",
       title: "Your Delivery is now Approved",
@@ -41,40 +41,28 @@ export default function Notifications() {
     },
   ];
 
-  const handleViewDetails = (notification) => {
-    console.log("View details:", notification.id);
-  };
-
   return (
     <SafeAreaView style={styles.safeArea}>
-      <LinearGradient
-        colors={["#9E1E21", "#4F0A11"]}
-        style={styles.header}
-      >
-        <View style={styles.profileContainer}>
-          <Image source={pfpplaceholder} style={styles.pfp} />
 
-          <View>
-            <Text style={styles.welcome}>Welcome!</Text>
-            <Text style={styles.name}>Christopher Lee</Text>
-          </View>
-        </View>
+      {/* HEADER */}
+      <AppHeader
+        icon="notifications-outline"
+        iconSize={27}
+      />
 
-        <TouchableOpacity style={styles.headerIcon}>
-          <Ionicons
-            name="notifications-outline"
-            size={27}
-            color="#FFFFFF"
-          />
-        </TouchableOpacity>
-      </LinearGradient>
-
+      {/* BODY */}
       <View style={styles.body}>
+
         <View style={styles.titleRow}>
-          <Text style={styles.pageTitle}>Notifications</Text>
+          <Text style={styles.pageTitle}>
+            Notifications
+          </Text>
 
           <TouchableOpacity style={styles.sortButton}>
-            <Text style={styles.sortText}>Sort</Text>
+            <Text style={styles.sortText}>
+              Sort
+            </Text>
+
             <Ionicons
               name="chevron-down"
               size={14}
@@ -91,12 +79,10 @@ export default function Notifications() {
             <NotificationCard
               key={notification.id}
               notification={notification}
-              onViewDetails={() =>
-                handleViewDetails(notification)
-              }
             />
           ))}
         </ScrollView>
+
       </View>
     </SafeAreaView>
   );
@@ -108,50 +94,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#D7D9E4",
   },
 
-  header: {
-    paddingTop: height * 0.035,
-    paddingHorizontal: width * 0.03,
-    paddingBottom: height * 0.025,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-
-  profileContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-
-  pfp: {
-    width: width * 0.14,
-    height: width * 0.14,
-    borderRadius: width * 0.07,
-  },
-
-  welcome: {
-    color: "#FFFFFF",
-    fontSize: width * 0.045,
-    fontWeight: "500",
-    marginLeft: width * 0.025,
-  },
-
-  name: {
-    color: "#FFFFFF",
-    fontSize: width * 0.045,
-    fontWeight: "700",
-    marginLeft: width * 0.025,
-  },
-
-  headerIcon: {
-    width: width * 0.1,
-    height: width * 0.1,
-    borderRadius: width * 0.05,
-    borderWidth: 1,
-    borderColor: "#FFFFFF",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
   body: {
     flex: 1,
     backgroundColor: "#D7D9E4",
@@ -159,8 +101,10 @@ const styles = StyleSheet.create({
 
   titleRow: {
     backgroundColor: "#F7F8FC",
+
     paddingHorizontal: width * 0.035,
     paddingVertical: height * 0.012,
+
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -175,9 +119,12 @@ const styles = StyleSheet.create({
   sortButton: {
     flexDirection: "row",
     alignItems: "center",
+
     backgroundColor: "#D5DDF3",
+
     paddingHorizontal: 10,
     paddingVertical: 5,
+
     borderRadius: 6,
   },
 

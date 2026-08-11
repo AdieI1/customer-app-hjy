@@ -46,7 +46,7 @@ export default function Notifications() {
 
       {/* HEADER */}
       <AppHeader
-        icon="notifications-outline"
+        icon="document-text-outline"
         iconSize={27}
       />
 

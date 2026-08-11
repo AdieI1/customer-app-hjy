@@ -23,7 +23,7 @@ export default function DeliverySection({ pickup, dropoff, onOpenMap }) {
         <View style={styles.row}>
           <Ionicons name="location-sharp" size={18} color="#E53935" />
           <Text style={styles.text}>
-            {pickup ? "Pickup location selected" : "Tap to select pickup location"}
+            {pickup?.address ? pickup.address : "Tap to select pickup location"}
           </Text>
         </View>
       </TouchableOpacity>
@@ -36,7 +36,7 @@ export default function DeliverySection({ pickup, dropoff, onOpenMap }) {
         <View style={styles.row}>
           <Ionicons name="location-sharp" size={18} color="#E53935" />
           <Text style={styles.text}>
-            {dropoff ? "Drop-off location selected" : "Tap to select drop-off location"}
+            {dropoff?.address ? dropoff.address : "Tap to select drop-off location"}
           </Text>
         </View>
       </TouchableOpacity>

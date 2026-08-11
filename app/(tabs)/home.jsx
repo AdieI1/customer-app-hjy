@@ -1,98 +1,123 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { Animated, Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import ActiveDeliveryCard from "../../components/ActiveDeliveryCard";
+import NoActiveDeliveryCard from "../../components/NoActiveDeliveryCard";
 import RequestSheet from "../../components/RequestSheet";
 
 const { width, height } = Dimensions.get("window");
 const pfpplaceholder = require("../../assets/images/profilepic.png");
 
 const Home = () => {
+  const router = useRouter();
   const [showSheet, setShowSheet] = useState(false);
 
-  const translateY = useRef(new Animated.Value(height)).current;
+  const translateY = useRef(
+    new Animated.Value(height)
+  ).current;
+
+  const activeDelivery = {
+    cargoName: "Electronics Cargo",
+    status: "intransit",
+    date: "3/30/2026",
+    route: "Port Area - Malaybalay",
+  };
 
   useEffect(() => {
-    if (showSheet) {
-      Animated.timing(translateY, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-    } else {
-      Animated.timing(translateY, {
-        toValue: height,
-        duration: 250,
-        useNativeDriver: true,
-      }).start();
-    }
+    Animated.timing(translateY, {
+      toValue: showSheet ? 0 : height,
+      duration: showSheet ? 300 : 250,
+      useNativeDriver: true,
+    }).start();
   }, [showSheet]);
 
   const openSheet = () => setShowSheet(true);
   const closeSheet = () => setShowSheet(false);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
 
-      <View style={{ flex: 1 }}>
-
-        <LinearGradient colors={["#4F0A11", "#9E1E21"]} style={styles.container}>
-          
+        {/* HEADER */}
+        <LinearGradient
+          colors={["#4F0A11", "#9E1E21"]}
+          style={styles.header}
+        >
           <View style={styles.pfpContainer}>
-            <Image source={pfpplaceholder} style={styles.pfp} />
+            <Image
+              source={pfpplaceholder}
+              style={styles.pfp}
+            />
 
             <View>
-              <Text style={styles.welcome}>Welcome!</Text>
-              <Text style={styles.Name}>Justine Montefalco.</Text>
+              <Text style={styles.welcome}>
+                Welcome!
+              </Text>
+
+              <Text style={styles.name}>
+                Justine Montefalco.
+              </Text>
             </View>
           </View>
 
           <TouchableOpacity style={styles.draftIcon}>
-            <Ionicons name="document-text-outline" size={30} color="#ffffff" />
+            <Ionicons
+              name="document-text-outline"
+              size={30}
+              color="#FFFFFF"
+            />
           </TouchableOpacity>
-
         </LinearGradient>
 
-        <ScrollView style={styles.body} showsVerticalScrollIndicator={false}>
-          
+        {/* BODY */}
+        <ScrollView
+          style={styles.body}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+
+          {/* REQUEST DELIVERY */}
           <View style={styles.requestCard}>
-            <Text style={styles.requestHeader}>Request Delivery!</Text>
+            <Text style={styles.requestHeader}>
+              Request Delivery!
+            </Text>
+
             <Text style={styles.requestSubheader}>
               Schedule a delivery quick and easy.
             </Text>
 
             <View style={styles.divider} />
 
-            <TouchableOpacity style={styles.requestBtn} onPress={openSheet}>
-              <Ionicons name="car-outline" size={20} color="#ffffff" />
-              <Text style={styles.requestBtnText}>Create Request</Text>
+            <TouchableOpacity
+              style={styles.requestBtn}
+              onPress={openSheet}
+              activeOpacity={0.8}
+            >
+              <Ionicons
+                name="car-outline"
+                size={20}
+                color="#FFFFFF"
+              />
+
+              <Text style={styles.requestBtnText}>
+                Create Request
+              </Text>
             </TouchableOpacity>
           </View>
 
-          <View style={styles.activeCard}>
-            <Text style={styles.activeHeader}>Active Deliveries</Text>
-
-            <View style={styles.divider} />
-
-            <View style={styles.activeContent}>
-              <View style={styles.boxIcon}>
-                <Ionicons name="cube-outline" size={35} color="#ffffff" />
-              </View>
-
-              <View style={styles.activetxtContainer}>
-                <Text style={styles.noactiveHeader}>
-                  No active deliveries yet!
-                </Text>
-                <Text style={styles.noactiveSubheader}>
-                  Tap "Create Request" to schedule your first delivery!
-                </Text>
-              </View>
-            </View>
-
-            <View style={styles.divider} />
-          </View>
+          {/* ACTIVE DELIVERY */}
+        {activeDelivery ? (
+          <ActiveDeliveryCard
+            delivery={activeDelivery}
+            onViewDetails={() => router.push("/deliveries")}
+          />
+        ) : (
+          <NoActiveDeliveryCard />
+        )}
 
         </ScrollView>
 
@@ -105,12 +130,16 @@ const Home = () => {
           />
         )}
 
-        {/* SHEET */}
+        {/* REQUEST SHEET */}
         {showSheet && (
           <Animated.View
             style={[
               styles.sheetContainer,
-              { transform: [{ translateY }] }
+              {
+                transform: [
+                  { translateY },
+                ],
+              },
             ]}
           >
             <RequestSheet onClose={closeSheet} />
@@ -118,7 +147,6 @@ const Home = () => {
         )}
 
       </View>
-
     </SafeAreaView>
   );
 };
@@ -126,8 +154,16 @@ const Home = () => {
 export default Home;
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#EDEDED",
+  },
 
   container: {
+    flex: 1,
+  },
+
+  header: {
     paddingTop: height * 0.05,
     paddingHorizontal: width * 0.03,
     paddingBottom: height * 0.025,
@@ -153,7 +189,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
 
-  Name: {
+  name: {
     color: "#FFFFFF",
     fontSize: width * 0.05,
     marginLeft: width * 0.03,
@@ -170,7 +206,13 @@ const styles = StyleSheet.create({
   },
 
   body: {
+    flex: 1,
+    backgroundColor: "#EDEEF5",
+  },
+
+  scrollContent: {
     padding: width * 0.04,
+    paddingBottom: height * 0.04,
   },
 
   requestCard: {
@@ -211,61 +253,20 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: width * 0.045,
     fontWeight: "600",
-  },
-
-  activeCard: {
-    marginTop: height * 0.02,
-    backgroundColor: "#FFFFFF",
-    borderRadius: 15,
-    padding: width * 0.05,
-  },
-
-  activeHeader: {
-    fontSize: width * 0.07,
-    fontWeight: "900",
-    color: "#DE2226",
-  },
-
-  activeContent: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-
-  boxIcon: {
-    width: width * 0.14,
-    height: width * 0.14,
-    borderRadius: 12,
-    backgroundColor: "#3286E8",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
-  activetxtContainer: {
-    flex: 1,
-    marginLeft: 10,
-  },
-
-  noactiveHeader: {
-    fontSize: width * 0.05,
-    fontWeight: "700",
-  },
-
-  noactiveSubheader: {
-    fontSize: width * 0.035,
-    color: "#4E5966",
+    marginLeft: 5,
   },
 
   sheetContainer: {
     position: "absolute",
     bottom: 0,
-    left: 0,  
+    left: 0,
     right: 0,
     height: height * 0.85,
-    backgroundColor: "#fff",
+    backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     zIndex: 999,
-    elevation: 20, 
+    elevation: 20,
   },
 
   backdrop: {

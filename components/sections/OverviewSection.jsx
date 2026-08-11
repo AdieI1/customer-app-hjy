@@ -17,14 +17,10 @@ export default function OverviewSection() {
 
   return (
     <View style={styles.card}>
-      {/* HEADER */}
+      {/* title and subtitle */}
       <View style={styles.headerTop}>
         <View style={styles.iconBox}>
-          <Ionicons
-            name="cube-outline"
-            size={width * 0.05}
-            color="#fff"
-          />
+          <Ionicons name="cube-outline"size={width * 0.05}color="#fff"/>
         </View>
 
         <View style={styles.headerText}>
@@ -37,7 +33,7 @@ export default function OverviewSection() {
 
       <View style={styles.divider} />
 
-      {/* ITEMS */}
+      {/* cost details */}
 
       <TouchableOpacity
         style={styles.row}
@@ -107,7 +103,7 @@ export default function OverviewSection() {
         </View>
       </TouchableOpacity>
 
-      {/* TOTAL */}
+      {/* total expenses */}
       <Text style={styles.total}>
         Total Expenses: 
       </Text>

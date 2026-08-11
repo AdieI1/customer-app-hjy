@@ -1,19 +1,28 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
-import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View, } from "react-native";
+import {
+  Dimensions,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import DeliveryCard from "../../components/DeliveryCard";
+
 const { width, height } = Dimensions.get("window");
+
 const pfpplaceholder = require("../../assets/images/profilepic.png");
 
-const deliveries = () => {
+export default function Deliveries() {
   const [selectedTab, setSelectedTab] = useState("active");
-
   const [showSort, setShowSort] = useState(false);
   const [sortOption, setSortOption] = useState("Sort");
 
-  {/* sorting options */}
   const sortOptions = [
     "Date",
     "A-Z",
@@ -22,46 +31,94 @@ const deliveries = () => {
     "Distance (Long - Short)",
   ];
 
+  const deliveries = [
+    {
+      id: "1",
+      cargoName: "Electronics Cargo",
+      cargo: "Electronics",
+      status: "delivered",
+      route: "Port Area - Malaybalay",
+      date: "March 30, 2026",
+      driver: "John Jones",
+      vehicle: "Fuso FJ 2828R",
+      plate: "XYZ 1213",
+      distance: "20 km",
+    },
+  ];
+
+  const activeDeliveries = deliveries.filter(
+    (item) => item.status === "intransit"
+  );
+
+  const historyDeliveries = deliveries.filter(
+    (item) => item.status === "delivered"
+  );
+
+  const displayedDeliveries =
+    selectedTab === "active"
+      ? activeDeliveries
+      : historyDeliveries;
+
   return (
     <SafeAreaView style={styles.safeArea}>
-
-      {/* forda header */}
-      <LinearGradient colors={["#9E1E21", "#4F0A11"]} style={styles.container}>
+      {/* HEADER */}
+      <LinearGradient
+        colors={["#9E1E21", "#4F0A11"]}
+        style={styles.container}
+      >
         <View style={styles.pfpContainer}>
-          <Image source={pfpplaceholder} style={styles.pfp} />
+          <Image
+            source={pfpplaceholder}
+            style={styles.pfp}
+          />
 
           <View>
-            <Text style={styles.welcome}>Welcome!</Text>
-            <Text style={styles.Name}>Justine Montefalco.</Text>
+            <Text style={styles.welcome}>
+              Welcome!
+            </Text>
+
+            <Text style={styles.Name}>
+              Justine Montefalco.
+            </Text>
           </View>
         </View>
 
         <TouchableOpacity style={styles.draftIcon}>
-          <Ionicons name="document-text-outline" size={30} color="#ffffff" />
+          <Ionicons
+            name="document-text-outline"
+            size={30}
+            color="#FFFFFF"
+          />
         </TouchableOpacity>
       </LinearGradient>
 
-      {/* for the deliveries container */}
+      {/* BODY */}
       <View style={styles.body}>
-
         <View style={styles.card}>
-
           <View style={styles.cardContent}>
-
-            {/* Deliveries header */}
+            {/* TITLE */}
             <View style={styles.headerRow}>
-              <Text style={styles.Deliveries}>Deliveries</Text>
+              <Text style={styles.Deliveries}>
+                Deliveries
+              </Text>
 
               <TouchableOpacity
                 style={styles.sort}
                 onPress={() => setShowSort(!showSort)}
               >
-                <Text style={[styles.sorttxt, {marginRight: 3}]}>{sortOption} </Text>
-                <Ionicons name="chevron-down" size={14} color="#0C56AD" />
+                <Text style={styles.sorttxt}>
+                  {sortOption}
+                </Text>
+
+                <Ionicons
+                  name="chevron-down"
+                  size={14}
+                  color="#0C56AD"
+                />
               </TouchableOpacity>
             </View>
 
-            {/* for the dropdown */}
+            {/* SORT DROPDOWN */}
             {showSort && (
               <View style={styles.dropdown}>
                 {sortOptions.map((item) => (
@@ -73,7 +130,9 @@ const deliveries = () => {
                       setShowSort(false);
                     }}
                   >
-                    <Text style={styles.dropdownText}>{item}</Text>
+                    <Text style={styles.dropdownText}>
+                      {item}
+                    </Text>
                   </TouchableOpacity>
                 ))}
               </View>
@@ -81,20 +140,21 @@ const deliveries = () => {
 
             <View style={styles.divider} />
 
-            {/* forda active-history tabs */}
+            {/* TABS */}
             <View style={styles.tabRow}>
-
               <TouchableOpacity
                 style={[
                   styles.tabButton,
-                  selectedTab === "active" && styles.tabActive,
+                  selectedTab === "active" &&
+                    styles.tabActive,
                 ]}
                 onPress={() => setSelectedTab("active")}
               >
                 <Text
                   style={[
                     styles.tabText,
-                    selectedTab === "active" && styles.tabTextActive,
+                    selectedTab === "active" &&
+                      styles.tabTextActive,
                   ]}
                 >
                   Active
@@ -104,46 +164,60 @@ const deliveries = () => {
               <TouchableOpacity
                 style={[
                   styles.tabButton,
-                  selectedTab === "history" && styles.tabActive,
+                  selectedTab === "history" &&
+                    styles.tabActive,
                 ]}
                 onPress={() => setSelectedTab("history")}
               >
                 <Text
                   style={[
                     styles.tabText,
-                    selectedTab === "history" && styles.tabTextActive,
+                    selectedTab === "history" &&
+                      styles.tabTextActive,
                   ]}
                 >
                   History
                 </Text>
               </TouchableOpacity>
-
             </View>
-
           </View>
         </View>
 
-        {/* message for empty */}
-        <View style={styles.messageContainer}>
-          {selectedTab === "active" ? (
-            <Text style={styles.message}>
-              You have no active deliveries yet
-            </Text>
+        {/* DELIVERY CARDS */}
+        <ScrollView
+          style={styles.deliveryList}
+          contentContainerStyle={styles.deliveryContent}
+          showsVerticalScrollIndicator={false}
+        >
+          {displayedDeliveries.length > 0 ? (
+            displayedDeliveries.map((delivery) => (
+              <DeliveryCard
+                key={delivery.id}
+                delivery={delivery}
+                onReview={() =>
+                  console.log(
+                    "Review:",
+                    delivery.id
+                  )
+                }
+              />
+            ))
           ) : (
-            <Text style={styles.message}>
-              You don’t have any deliveries in your history
-            </Text>
+            <View style={styles.messageContainer}>
+              <Text style={styles.message}>
+                {selectedTab === "active"
+                  ? "You have no active deliveries yet"
+                  : "You don’t have any deliveries in your history"}
+              </Text>
+            </View>
           )}
-        </View>
-
+        </ScrollView>
       </View>
     </SafeAreaView>
   );
-};
+}
 
-export default deliveries;
 const styles = StyleSheet.create({
-
   safeArea: {
     flex: 1,
     backgroundColor: "#EDEDED",
@@ -196,20 +270,19 @@ const styles = StyleSheet.create({
   },
 
   card: {
-    backgroundColor: "#fff",
+    backgroundColor: "#FFFFFF",
   },
 
   cardContent: {
     paddingHorizontal: width * 0.04,
     paddingTop: height * 0.02,
-    paddingBottom: height * 0.02,
+    paddingBottom: height * 0.015,
   },
 
   headerRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: height * 0.0013,
   },
 
   Deliveries: {
@@ -222,10 +295,9 @@ const styles = StyleSheet.create({
   sort: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
     backgroundColor: "#DCE3F1",
     paddingVertical: height * 0.008,
-    paddingHorizontal: width * 0.030,
+    paddingHorizontal: width * 0.03,
     borderRadius: 12,
   },
 
@@ -233,7 +305,7 @@ const styles = StyleSheet.create({
     color: "#3B5BDB",
     fontSize: width * 0.035,
     fontWeight: "600",
-    marginRight: 2,
+    marginRight: 3,
   },
 
   divider: {
@@ -265,8 +337,18 @@ const styles = StyleSheet.create({
   },
 
   tabTextActive: {
-    color: "#fff",
+    color: "#FFFFFF",
     fontWeight: "700",
+  },
+
+  deliveryList: {
+    flex: 1,
+  },
+
+  deliveryContent: {
+    paddingHorizontal: width * 0.025,
+    paddingTop: height * 0.015,
+    paddingBottom: height * 0.12,
   },
 
   messageContainer: {
@@ -281,32 +363,27 @@ const styles = StyleSheet.create({
   },
 
   dropdown: {
-  position: "absolute",
-  top: height * 0.065,
-  right: width * 0.04,
-  backgroundColor: "#fff",
-  borderRadius: 10,
-  width: width * 0.6,
-  paddingVertical: 6,
-  shadowColor: "#000",
-  shadowOpacity: 0.15,
-  shadowRadius: 8,
-  elevation: 5,
-  zIndex: 1000,
-},
+    position: "absolute",
+    top: height * 0.065,
+    right: width * 0.04,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 10,
+    width: width * 0.6,
+    paddingVertical: 6,
+    shadowColor: "#000",
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 5,
+    zIndex: 1000,
+  },
 
-dropdownItem: {
-  paddingVertical: 10,
-  paddingHorizontal: 12,
-},
+  dropdownItem: {
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+  },
 
-dropdownText: {
-  fontSize: width * 0.035,
-  color: "#333",
-},
-
-card: {
-  backgroundColor: "#fff",
-  position: "relative",
-},
+  dropdownText: {
+    fontSize: width * 0.035,
+    color: "#333",
+  },
 });

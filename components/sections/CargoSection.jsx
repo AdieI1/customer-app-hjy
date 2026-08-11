@@ -1,9 +1,19 @@
 import { useState } from "react";
-import { Dimensions, FlatList, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View, } from "react-native";
+import {
+  Dimensions,
+  FlatList,
+  Modal,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 const { width, height } = Dimensions.get("window");
 
 export default function CargoSection() {
+  const [cargoName, setCargoName] = useState("");
   const [cargoType, setCargoType] = useState(null);
   const [fragility, setFragility] = useState(null);
   const [weight, setWeight] = useState("");
@@ -11,10 +21,19 @@ export default function CargoSection() {
   const [modalVisible, setModalVisible] = useState(false);
   const [activeField, setActiveField] = useState(null);
 
-  //Carg type list
-  const cargoOptions = ["Electronics","General Goods","Construction","Furniture","Perishable Goods",];
- //Fragility list
-  const fragilityOptions = ["Fragile", "Standard", "Perishable"];
+  const cargoOptions = [
+    "Electronics",
+    "General Goods",
+    "Construction",
+    "Furniture",
+    "Perishable Goods",
+  ];
+
+  const fragilityOptions = [
+    "Fragile",
+    "Standard",
+    "Perishable",
+  ];
 
   const openModal = (field) => {
     setActiveField(field);
@@ -33,7 +52,9 @@ export default function CargoSection() {
   };
 
   const getOptions = () => {
-    return activeField === "cargo" ? cargoOptions : fragilityOptions;
+    return activeField === "cargo"
+      ? cargoOptions
+      : fragilityOptions;
   };
 
   const getModalTitle = () => {
@@ -44,32 +65,53 @@ export default function CargoSection() {
 
   return (
     <View style={styles.card}>
+      <Text style={styles.title}>Cargo Information</Text>
 
-      <Text style={styles.title}>Cargo Information</Text> 
       <View style={styles.divider} />
 
+      {/* Cargo Name */}
+      <TextInput
+        style={styles.input}
+        placeholder="Enter Cargo Name"
+        placeholderTextColor="#888"
+        value={cargoName}
+        onChangeText={setCargoName}
+      />
+
+      {/* Cargo Type */}
       <TouchableOpacity
         style={styles.input}
         onPress={() => openModal("cargo")}
       >
-        <Text style={cargoType ? styles.value : styles.placeholder}>
+        <Text
+          style={
+            cargoType ? styles.value : styles.placeholder
+          }
+        >
           {cargoType || "Select Cargo Type"}
         </Text>
       </TouchableOpacity>
 
+      {/* Fragility */}
       <TouchableOpacity
         style={styles.input}
         onPress={() => openModal("fragility")}
       >
-        <Text style={fragility ? styles.value : styles.placeholder}>
+        <Text
+          style={
+            fragility ? styles.value : styles.placeholder
+          }
+        >
           {fragility || "Select Cargo Fragility"}
         </Text>
       </TouchableOpacity>
 
+      {/* Weight */}
       <View style={styles.weightContainer}>
         <TextInput
           style={styles.weightInput}
           placeholder="Enter Cargo Weight"
+          placeholderTextColor="#888"
           keyboardType="numeric"
           value={weight}
           onChangeText={(text) => {
@@ -77,15 +119,29 @@ export default function CargoSection() {
             setWeight(cleaned);
           }}
         />
-        <Text style={[styles.kg, weight ? styles.kgActive : null]}>
+
+        <Text
+          style={[
+            styles.kg,
+            weight ? styles.kgActive : null,
+          ]}
+        >
           kg
         </Text>
       </View>
 
-      <Modal visible={modalVisible} transparent animationType="slide">
+      {/* Selection Modal */}
+      <Modal
+        visible={modalVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={closeModal}
+      >
         <View style={styles.modalOverlay}>
           <View style={styles.modalBox}>
-            <Text style={styles.modalTitle}>{getModalTitle()}</Text>
+            <Text style={styles.modalTitle}>
+              {getModalTitle()}
+            </Text>
 
             <FlatList
               data={getOptions()}
@@ -95,18 +151,21 @@ export default function CargoSection() {
                   style={styles.option}
                   onPress={() => handleSelect(item)}
                 >
-                  <Text style={styles.optionText}>{item}</Text>
+                  <Text style={styles.optionText}>
+                    {item}
+                  </Text>
                 </TouchableOpacity>
               )}
             />
 
             <TouchableOpacity onPress={closeModal}>
-              <Text style={styles.cancel}>Cancel</Text>
+              <Text style={styles.cancel}>
+                Cancel
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
-
     </View>
   );
 }
@@ -119,14 +178,14 @@ const styles = StyleSheet.create({
     marginBottom: height * 0.015,
   },
 
-   title: {
+  title: {
     fontSize: width * 0.04,
     fontWeight: "700",
     color: "#E53935",
     marginBottom: height * 0.01,
   },
 
-   divider: {
+  divider: {
     height: 1,
     backgroundColor: "#eee",
     marginBottom: height * 0.01,
@@ -138,6 +197,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: width * 0.03,
     borderRadius: width * 0.03,
     marginBottom: height * 0.012,
+    fontSize: width * 0.035,
+    color: "#111",
   },
 
   placeholder: {
@@ -163,7 +224,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: height * 0.015,
     fontSize: width * 0.035,
-    color: "#888",
+    color: "#111",
   },
 
   kg: {

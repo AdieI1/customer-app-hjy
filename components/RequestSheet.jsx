@@ -1,7 +1,16 @@
-import { useState } from "react"; // added
-import { Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useState } from "react";
+import {
+  Dimensions,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-import MapModal from "./MapModal"; // FIXED PATH
+import { useRouter } from "expo-router";
+import MapModal from "./MapModal";
+import SuccessRequest from "./SuccessRequest";
 import CargoSection from "./sections/CargoSection";
 import DeliverySection from "./sections/DeliverySection";
 import OverviewSection from "./sections/OverviewSection";
@@ -10,34 +19,77 @@ import PaymentSection from "./sections/PaymentSection";
 const { width, height } = Dimensions.get("window");
 
 export default function RequestSheet({ onClose }) {
+  const router = useRouter();
   const isSmallScreen = width < 360;
 
-  const [mapVisible, setMapVisible] = useState(false); // added
-  const [activeField, setActiveField] = useState(null); // added
+  const [mapVisible, setMapVisible] = useState(false);
+  const [activeField, setActiveField] = useState(null);
+  const [requestComplete, setRequestComplete] = useState(false);
 
-  const [pickup, setPickup] = useState(null); // added
-  const [dropoff, setDropoff] = useState(null); // added
+  const [pickup, setPickup] = useState(null);
+  const [dropoff, setDropoff] = useState(null);
 
-  const openMap = (type) => { // added
+  const openMap = (type) => {
     setActiveField(type);
     setMapVisible(true);
   };
 
-  const handleConfirm = (coords) => { // added
-    if (activeField === "pickup") setPickup(coords);
-    if (activeField === "dropoff") setDropoff(coords);
+  const handleConfirm = (payload) => {
+    if (!payload) return;
+
+    if (payload.type === "pickup") {
+      setPickup(payload.data);
+    }
+
+    if (payload.type === "dropoff") {
+      setDropoff(payload.data);
+    }
+
+    setMapVisible(false);
   };
+
+  const handleComplete = () => {
+    setRequestComplete(true);
+  };
+
+  const handleViewDelivery = () => {
+    // Navigation to the Deliveries tab can be added later.
+     router.push("/deliveries");
+  };
+
+  const handleReturnHome = () => {
+    setRequestComplete(false);
+    onClose();
+  };
+
+  if (requestComplete) {
+    return (
+      <View style={styles.container}>
+        <SuccessRequest
+          onViewDelivery={handleViewDelivery}
+          onReturnHome={handleReturnHome}
+        />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-
       <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
+        <TouchableOpacity
+          onPress={onClose}
+          style={styles.closeBtn}
+        >
           <Text style={styles.closeText}>✕</Text>
         </TouchableOpacity>
 
         <View style={styles.headerCenter}>
-          <Text style={[styles.title, isSmallScreen && { fontSize: 20 }]}>
+          <Text
+            style={[
+              styles.title,
+              isSmallScreen && { fontSize: 20 },
+            ]}
+          >
             Request Delivery
           </Text>
 
@@ -54,13 +106,12 @@ export default function RequestSheet({ onClose }) {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-
         <CargoSection />
 
         <DeliverySection
-          pickup={pickup} // added
-          dropoff={dropoff} // added
-          onOpenMap={openMap} // added
+          pickup={pickup}
+          dropoff={dropoff}
+          onOpenMap={openMap}
         />
 
         <OverviewSection />
@@ -68,23 +119,33 @@ export default function RequestSheet({ onClose }) {
         <PaymentSection />
 
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.primaryBtn}>
-            <Text style={styles.primaryText}>Complete</Text>
+          <TouchableOpacity
+            style={styles.primaryBtn}
+            onPress={handleComplete}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.primaryText}>
+              Complete
+            </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.secondaryBtn}>
-            <Text style={styles.secondaryText}>Save as Draft</Text>
+          <TouchableOpacity
+            style={styles.secondaryBtn}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.secondaryText}>
+              Save as Draft
+            </Text>
           </TouchableOpacity>
         </View>
-
       </ScrollView>
 
       <MapModal
-        visible={mapVisible} // added
-        onClose={() => setMapVisible(false)} // added
-        onConfirm={handleConfirm} // FIXED CLEAN
+        visible={mapVisible}
+        onClose={() => setMapVisible(false)}
+        onConfirm={handleConfirm}
+        mode={activeField}
       />
-
     </View>
   );
 }

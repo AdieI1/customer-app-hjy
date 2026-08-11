@@ -57,7 +57,6 @@ export default function PaymentSection() {
           <Text style={styles.bankText}>Bank Name:</Text>
           <Text style={styles.bankText}>Account Name:</Text>
           <Text style={styles.bankText}>Account Number:</Text>
-          <Text style={styles.bankText}>IBAN:</Text>
 
           <View style={styles.uploadBox}>
             <Text style={{ color: "#777" }}>Upload Screenshot</Text>

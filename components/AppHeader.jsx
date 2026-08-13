@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
 import {
   Dimensions,
   Image,
@@ -8,7 +9,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
 const { width, height } = Dimensions.get("window");
 
 const pfpplaceholder = require("../assets/images/profilepic.png");
@@ -42,8 +42,7 @@ export default function AppHeader({
 
       <TouchableOpacity
         style={styles.headerIcon}
-        onPress={onIconPress}
-        activeOpacity={0.8}
+        onPress={() => router.push("/drafts")}
       >
         <Ionicons
           name={icon}

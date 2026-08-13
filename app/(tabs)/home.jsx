@@ -16,6 +16,7 @@ import ActiveDeliveryCard from "../../components/ActiveDeliveryCard";
 import AppHeader from "../../components/AppHeader";
 import NoActiveDeliveryCard from "../../components/NoActiveDeliveryCard";
 import RequestSheet from "../../components/RequestSheet";
+import SaveMessage from "../../components/SaveMessage";
 
 const { width, height } = Dimensions.get("window");
 
@@ -23,6 +24,8 @@ const Home = () => {
   const router = useRouter();
 
   const [showSheet, setShowSheet] = useState(false);
+  const [showSaveMessage, setShowSaveMessage] =
+    useState(false);
 
   const translateY = useRef(
     new Animated.Value(height)
@@ -51,6 +54,25 @@ const Home = () => {
     setShowSheet(false);
   };
 
+  const handleDraftSaved = () => {
+    /*
+     * Close the sheet first.
+     */
+    setShowSheet(false);
+
+    /*
+     * Show the message.
+     */
+    setShowSaveMessage(true);
+
+    /*
+     * Automatically hide it after 3 seconds.
+     */
+    setTimeout(() => {
+      setShowSaveMessage(false);
+    }, 3000);
+  };
+
   const handleViewDelivery = () => {
     router.push("/deliveries");
   };
@@ -58,7 +80,6 @@ const Home = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-
         {/* HEADER */}
         <AppHeader
           icon="document-text-outline"
@@ -71,7 +92,6 @@ const Home = () => {
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
-
           {/* REQUEST DELIVERY */}
           <View style={styles.requestCard}>
             <Text style={styles.requestHeader}>
@@ -110,8 +130,10 @@ const Home = () => {
           ) : (
             <NoActiveDeliveryCard />
           )}
-
         </ScrollView>
+
+        {/* SAVE MESSAGE */}
+        {showSaveMessage && <SaveMessage />}
 
         {/* BACKDROP */}
         {showSheet && (
@@ -136,10 +158,12 @@ const Home = () => {
               },
             ]}
           >
-            <RequestSheet onClose={closeSheet} />
+            <RequestSheet
+              onClose={closeSheet}
+              onDraftSaved={handleDraftSaved}
+            />
           </Animated.View>
         )}
-
       </View>
     </SafeAreaView>
   );
@@ -196,7 +220,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#E53935",
     paddingVertical: 12,
     borderRadius: 12,
-
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
@@ -214,26 +237,19 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-
     height: height * 0.85,
-
     backgroundColor: "#FFFFFF",
-
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-
     zIndex: 999,
     elevation: 20,
   },
 
   backdrop: {
     position: "absolute",
-
     width: "100%",
     height: "100%",
-
     backgroundColor: "rgba(0,0,0,0.4)",
-
     zIndex: 998,
   },
 });

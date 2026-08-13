@@ -8,7 +8,6 @@ import {
   View,
 } from "react-native";
 
-import { useRouter } from "expo-router";
 import MapModal from "./MapModal";
 import SuccessRequest from "./SuccessRequest";
 import CargoSection from "./sections/CargoSection";
@@ -18,13 +17,16 @@ import PaymentSection from "./sections/PaymentSection";
 
 const { width, height } = Dimensions.get("window");
 
-export default function RequestSheet({ onClose }) {
-  const router = useRouter();
+export default function RequestSheet({
+  onClose,
+  onDraftSaved,
+}) {
   const isSmallScreen = width < 360;
 
   const [mapVisible, setMapVisible] = useState(false);
   const [activeField, setActiveField] = useState(null);
-  const [requestComplete, setRequestComplete] = useState(false);
+  const [requestComplete, setRequestComplete] =
+    useState(false);
 
   const [pickup, setPickup] = useState(null);
   const [dropoff, setDropoff] = useState(null);
@@ -53,12 +55,26 @@ export default function RequestSheet({ onClose }) {
   };
 
   const handleViewDelivery = () => {
-    // Navigation to the Deliveries tab can be added later.
-     router.push("/deliveries");
+    onClose();
   };
 
   const handleReturnHome = () => {
     setRequestComplete(false);
+    onClose();
+  };
+
+  const handleSaveDraft = () => {
+    /*
+     * Tell Home that the draft was saved.
+     * Home will display the SaveMessage.
+     */
+    if (onDraftSaved) {
+      onDraftSaved();
+    }
+
+    /*
+     * Close the request sheet.
+     */
     onClose();
   };
 
@@ -80,7 +96,9 @@ export default function RequestSheet({ onClose }) {
           onPress={onClose}
           style={styles.closeBtn}
         >
-          <Text style={styles.closeText}>✕</Text>
+          <Text style={styles.closeText}>
+            ✕
+          </Text>
         </TouchableOpacity>
 
         <View style={styles.headerCenter}>
@@ -94,7 +112,8 @@ export default function RequestSheet({ onClose }) {
           </Text>
 
           <Text style={styles.subtitle}>
-            Enter the required details to request a delivery.
+            Enter the required details to request a
+            delivery.
           </Text>
         </View>
 
@@ -131,6 +150,7 @@ export default function RequestSheet({ onClose }) {
 
           <TouchableOpacity
             style={styles.secondaryBtn}
+            onPress={handleSaveDraft}
             activeOpacity={0.8}
           >
             <Text style={styles.secondaryText}>
